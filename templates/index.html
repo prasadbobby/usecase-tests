@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Test Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        .project-card {
+            transition: transform 0.2s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card {
+            border-radius: 10px;
+            border-left: 5px solid #0d6efd;
+        }
+
+        .element-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .code-preview {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .execution-log {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .test-card {
+            border-left: 5px solid #0d6efd;
+            transition: all 0.2s;
+        }
+
+        .test-card:hover {
+            transform: translateX(3px);
+        }
+
+        .pom-card {
+            border-left: 5px solid #198754;
+        }
+
+        .execution-card {
+            border-left: 5px solid #6c757d;
+        }
+
+        .custom-tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .custom-tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .custom-tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .workflow-step {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .workflow-step:after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: #0d6efd;
+            top: 40px;
+            bottom: -30px;
+            left: 20px;
+            z-index: 0;
+        }
+
+        .workflow-step:last-child:after {
+            display: none;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            color: white;
+            font-weight: bold;
+            z-index: 1;
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-robot me-2"></i>UI Test Generator
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#createProjectModal">
+                            <i class="bi bi-plus-circle me-1"></i>New Project
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#helpModal">
+                            <i class="bi bi-question-circle me-1"></i>Help
+                        </a>
+                    </li>
+                </ul>
+                <div class="ms-auto d-flex align-items-center">
+                    <span class="badge bg-light text-dark me-2">
+                        <i class="bi bi-cpu"></i> Using Gemini 1.5 Flash
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Project Sidebar -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-folder me-2"></i>Projects</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% if projects %}
+                            {% for project in projects %}
+                            <a href="{{ url_for('index', project=project.id) }}"
+                                class="list-group-item list-group-item-action {% if selected_project and selected_project.id == project.id %}active{% endif %}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ project.name }}</h6>
+                                    <small>{{ project.created_at }}</small>
+                                </div>
+                                <p class="mb-1 text-truncate">{{ project.description }}</p>
+                            </a>
+                            {% endfor %}
+                            {% else %}
+                            <div class="list-group-item">
+                                <p class="text-muted mb-0">No projects yet. Create one to get started!</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary btn-sm w-100" data-bs-toggle="modal"
+                            data-bs-target="#createProjectModal">
+                            <i class="bi bi-plus-circle me-1"></i>Create Project
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Workflow Guide -->
+                <div class="card mt-3 shadow-sm">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Workflow Guide</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="workflow-step">
+                            <div class="d-flex">
+                                <div class="step-number me-3">1</div>
+                                <div>
+                                    <h6>Upload Source Code</h6>
+                                    <p class="text-muted small">Upload your UI source code files</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="d-flex">
+                                <div class="step-number me-3">2</div>
+                                <div>
+                                    <h6>Scan UI Elements</h6>
+                                    <p class="text-muted small">Extract interactive elements from source</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="d-flex">
+                                <div class="step-number me-3">3</div>
+                                <div>
+                                    <h6>Generate POM</h6>
+                                    <p class="text-muted small">Create Page Object Models</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="d-flex">
+                                <div class="step-number me-3">4</div>
+                                <div>
+                                    <h6>Generate Tests</h6>
+                                    <p class="text-muted small">Create test scripts using Gemini AI</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="d-flex">
+                                <div class="step-number me-3">5</div>
+                                <div>
+                                    <h6>Execute Tests</h6>
+                                    <p class="text-muted small">Run tests and view results</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-md-9">
+                {% if selected_project %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="bi bi-folder2-open me-2"></i>{{ selected_project.name }}</h4>
+                        <span class="badge bg-light text-dark">Created: {{ selected_project.created_at }}</span>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Description:</strong> {{ selected_project.description }}</p>
+                        <p><strong>Source File:</strong> {{ selected_project.source_file }}</p>
+
+                        <div class="nav nav-pills mb-3">
+                            <a href="{{ url_for('index', project=selected_project.id, tab='dashboard') }}"
+                                class="nav-link {% if tab == 'dashboard' or not tab %}active{% endif %}">
+                                <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                            </a>
+                            <a href="{{ url_for('index', project=selected_project.id, tab='elements') }}"
+                                class="nav-link {% if tab == 'elements' %}active{% endif %}">
+                                <i class="bi bi-grid-3x3 me-1"></i>UI Elements
+                            </a>
+                            <a href="{{ url_for('index', project=selected_project.id, tab='pom') }}"
+                                class="nav-link {% if tab == 'pom' %}active{% endif %}">
+                                <i class="bi bi-diagram-3 me-1"></i>Page Objects
+                            </a>
+                            <a href="{{ url_for('index', project=selected_project.id, tab='tests') }}"
+                                class="nav-link {% if tab == 'tests' %}active{% endif %}">
+                                <i class="bi bi-code-square me-1"></i>Test Cases
+                            </a>
+                            <a href="{{ url_for('index', project=selected_project.id, tab='executions') }}"
+                                class="nav-link {% if tab == 'executions' %}active{% endif %}">
+                                <i class="bi bi-play-circle me-1"></i>Executions
+                            </a>
+                        </div>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content mt-4">
+                            <!-- Dashboard Tab -->
+                            {% if tab == 'dashboard' or not tab %}
+                            <div class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card stat-card shadow-sm bg-light">
+                                            <div class="card-body text-center">
+                                                <h1 class="display-4 text-primary">{{ elements|length }}</h1>
+                                                <h5>UI Elements</h5>
+                                            </div>
+                                            <div class="card-footer">
+                                                <form
+                                                    action="{{ url_for('scan_project_route', project_id=selected_project.id) }}"
+                                                    method="POST">
+                                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                        <i class="bi bi-search me-1"></i>Scan UI Elements
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card stat-card shadow-sm bg-light">
+                                            <div class="card-body text-center">
+                                                <h1 class="display-4 text-success">{{ poms|length }}</h1>
+                                                <h5>Page Objects</h5>
+                                            </div>
+                                            <div class="card-footer">
+                                                <form
+                                                    action="{{ url_for('generate_pom_route', project_id=selected_project.id) }}"
+                                                    method="POST">
+                                                    <button type="submit" class="btn btn-success btn-sm w-100" {% if not
+                                                        elements %}disabled{% endif %}>
+                                                        <i class="bi bi-layers me-1"></i>Generate POM
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card stat-card shadow-sm bg-light">
+                                            <div class="card-body text-center">
+                                                <h1 class="display-4 text-info">{{ tests|length }}</h1>
+                                                <h5>Test Cases</h5>
+                                            </div>
+                                            <div class="card-footer">
+                                                <form
+                                                    action="{{ url_for('generate_tests_route', project_id=selected_project.id) }}"
+                                                    method="POST">
+                                                    <input type="hidden" name="pom_id"
+                                                        value="{{ poms[0].id if poms else '' }}">
+                                                    <button type="submit" class="btn btn-info btn-sm w-100 text-white"
+                                                        {% if not poms %}disabled{% endif %}>
+                                                        <i class="bi bi-file-earmark-code me-1"></i>Generate Tests
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card shadow-sm">
+                                            <div class="card-header bg-primary text-white">
+                                                <h5 class="mb-0">Recent Tests</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                {% if tests %}
+                                                <div class="list-group">
+                                                    {% for test in tests[:3] %}
+                                                    <div class="list-group-item">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <h6 class="mb-1">{{ test.name }}</h6>
+                                                            <small>{{ test.created_at }}</small>
+                                                        </div>
+                                                        <p class="mb-1 small">{{ test.description }}</p>
+                                                        <a href="{{ url_for('view_code', test_id=test.id) }}"
+                                                            target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                                            <i class="bi bi-code-slash me-1"></i>View Code
+                                                        </a>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                {% else %}
+                                                <div class="alert alert-info mb-0">
+                                                    <i class="bi bi-info-circle me-2"></i>No test cases generated yet.
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card shadow-sm">
+                                            <div class="card-header bg-primary text-white">
+                                                <h5 class="mb-0">Recent Executions</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                {% if executions %}
+                                                <div class="list-group">
+                                                    {% for execution in executions[:3] %}
+                                                    <div class="list-group-item">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <h6 class="mb-1">Test Execution</h6>
+                                                            <span
+                                                                class="badge bg-{{ 'success' if execution.status == 'SUCCESS' else 'danger' if execution.status == 'FAILURE' else 'warning' }}">
+                                                                {{ execution.status }}
+                                                            </span>
+                                                        </div>
+                                                        <p class="mb-1 small">Executed at: {{ execution.executed_at }}
+                                                        </p>
+                                                        <a href="{{ url_for('download_file', filename=execution.log_path) }}"
+                                                            class="btn btn-sm btn-outline-secondary mt-2">
+                                                            <i class="bi bi-download me-1"></i>Download Log
+                                                        </a>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                {% else %}
+                                                <div class="alert alert-info mb-0">
+                                                    <i class="bi bi-info-circle me-2"></i>No test executions yet.
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- UI Elements Tab -->
+                            {% if tab == 'elements' %}
+                            <div class="tab-pane active">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4>UI Elements ({{ elements|length }})</h4>
+                                    <form action="{{ url_for('scan_project_route', project_id=selected_project.id) }}"
+                                        method="POST">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-search me-1"></i>Scan Source Code
+                                        </button>
+                                    </form>
+                                </div>
+
+                                {% if elements %}
+                                <div class="element-list">
+                                    <table class="table table-striped table-hover">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Selector</th>
+                                                <th>Text</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for element in elements %}
+                                            <tr>
+                                                <td>{{ element.name }}</td>
+                                                <td><span class="badge bg-secondary">{{ element.type }}</span></td>
+                                                <td><code>{{ element.selector }}</code></td>
+                                                <td>{{ element.properties.text[:30] }}{{ '...' if
+                                                    element.properties.text|length > 30 else '' }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="mt-3">
+                                    <form action="{{ url_for('generate_pom_route', project_id=selected_project.id) }}"
+                                        method="POST">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="bi bi-layers me-1"></i>Generate Page Object Model
+                                        </button>
+                                    </form>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>No UI elements found. Click the "Scan Source
+                                    Code" button to extract elements from your source files.
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- POM Tab -->
+                            {% if tab == 'pom' %}
+                            <div class="tab-pane active">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4>Page Object Models ({{ poms|length }})</h4>
+                                    <form action="{{ url_for('generate_pom_route', project_id=selected_project.id) }}"
+                                        method="POST">
+                                        <button type="submit" class="btn btn-success" {% if not elements %}disabled{%
+                                            endif %}>
+                                            <i class="bi bi-layers me-1"></i>Generate POM
+                                        </button>
+                                    </form>
+                                </div>
+
+                                {% if poms %}
+                                <div class="accordion" id="pomAccordion">
+                                    {% for pom in poms %}
+                                    <div class="accordion-item pom-card mb-3 shadow-sm">
+                                        <h2 class="accordion-header" id="pom-heading-{{ pom.id }}">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#pom-collapse-{{ pom.id }}">
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center w-100 me-3">
+                                                    <span>Page Object Model {{ loop.index }}</span>
+                                                    <small class="text-muted">{{ pom.created_at }}</small>
+                                                </div>
+                                            </button>
+                                        </h2>
+                                        <div id="pom-collapse-{{ pom.id }}" class="accordion-collapse collapse"
+                                            aria-labelledby="pom-heading-{{ pom.id }}" data-bs-parent="#pomAccordion">
+                                            <div class="accordion-body">
+                                                <div class="mb-3">
+                                                    <h6>Page Classes:</h6>
+                                                    <ul class="list-group">
+                                                        {% for element in pom.elements %}
+                                                        {% if element.type == 'page' %}
+                                                        <li class="list-group-item">
+                                                            <strong>{{ element.name }}</strong>
+                                                            <span class="badge bg-info text-white float-end">{{
+                                                                element.children|length }} elements</span>
+                                                        </li>
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between">
+                                                    <a href="{{ url_for('download_file', filename=pom.file_path) }}"
+                                                        class="btn btn-outline-primary">
+                                                        <i class="bi bi-download me-1"></i>Download POM JSON
+                                                    </a>
+                                                    <a href="{{ url_for('export_pom_csv', project_id=selected_project.id, pom_id=pom.id) }}"
+                                                            class="btn btn-outline-secondary">
+                                                            <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export as CSV
+                                                        </a>
+                                                    <form
+                                                        action="{{ url_for('generate_tests_route', project_id=selected_project.id) }}"
+                                                        method="POST">
+                                                        <input type="hidden" name="pom_id" value="{{ pom.id }}">
+                                                        <button type="submit" class="btn btn-info text-white">
+                                                            <i class="bi bi-file-earmark-code me-1"></i>Generate Tests
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>No Page Object Models generated yet. Click the
+                                    "Generate POM" button to create page objects from your UI elements.
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Tests Tab -->
+                            {% if tab == 'tests' %}
+                            <div class="tab-pane active">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4>Test Cases ({{ tests|length }})</h4>
+                                    <form action="{{ url_for('generate_tests_route', project_id=selected_project.id) }}"
+                                        method="POST">
+                                        <input type="hidden" name="pom_id" value="{{ poms[0].id if poms else '' }}">
+                                        <button type="submit" class="btn btn-info text-white" {% if not poms
+                                            %}disabled{% endif %}>
+                                            <i class="bi bi-file-earmark-code me-1"></i>Generate Tests
+                                        </button>
+                                    </form>
+                                </div>
+
+                                {% if tests %}
+                                <a href="{{ url_for('download_all_tests', project_id=selected_project.id) }}" 
+                                   class="btn btn-outline-primary mt-2 mb-3">
+                                    <i class="bi bi-file-earmark-zip me-1"></i>Download All Tests as ZIP
+                                </a>
+                                <div class="row">
+                                    {% for test in tests %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card test-card shadow-sm h-100">
+                                            <div class="card-header bg-light">
+                                                <h5 class="mb-0">{{ test.name }}</h5>
+                                                <small class="text-muted">{{ test.created_at }}</small>
+                                            </div>
+                                            <div class="card-body">
+                                                <p>{{ test.description }}</p>
+                                                <div class="d-flex justify-content-between">
+                                                    <a href="{{ url_for('view_code', test_id=test.id) }}"
+                                                        target="_blank" class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-code-slash me-1"></i>View Code
+                                                    </a>
+                                                    <form
+                                                        action="{{ url_for('execute_test_route', project_id=selected_project.id, test_id=test.id) }}"
+                                                        method="POST">
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="bi bi-play-fill me-1"></i>Execute Test
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>No test cases generated yet. Click the
+                                    "Generate Tests" button to create tests based on your Page Object Model.
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Executions Tab -->
+                            {% if tab == 'executions' %}
+                            <div class="tab-pane active">
+                                <h4>Test Executions ({{ executions|length }})</h4>
+
+                                {% if executions %}
+                                <div class="list-group mt-3">
+                                    {% for execution in executions %}
+                                    <div class="list-group-item list-group-item-action execution-card mb-3 shadow-sm">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">Execution #{{ loop.index }}</h5>
+                                            <span
+                                                class="badge bg-{{ 'success' if execution.status == 'SUCCESS' else 'danger' if execution.status == 'FAILURE' else 'warning' }} status-badge">
+                                                {{ execution.status }}
+                                            </span>
+                                        </div>
+                                        <p class="mb-1">
+                                            <strong>Executed:</strong> {{ execution.executed_at }}<br>
+                                            <strong>Test:</strong> {{ test_cases[execution.test_id].name if
+                                            execution.test_id in test_cases else 'Unknown Test' }}
+                                        </p>
+
+                                        <div class="mt-3">
+                                            <button class="btn btn-sm btn-outline-secondary" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#log-{{ execution.id }}">
+                                                <i class="bi bi-file-text me-1"></i>View Log
+                                            </button>
+                                            <a href="{{ url_for('download_file', filename=execution.log_path) }}"
+                                                class="btn btn-sm btn-outline-primary ms-2">
+                                                <i class="bi bi-download me-1"></i>Download Log
+                                            </a>
+                                        </div>
+
+                                        <div class="collapse mt-3" id="log-{{ execution.id }}">
+                                            <div class="execution-log">{{ execution.result.log }}</div>
+
+                                            {% if execution.result.tests %}
+                                            <h6 class="mt-3">Test Results:</h6>
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Test</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for result in execution.result.tests %}
+                                                    <tr>
+                                                        <td>{{ result.name }}</td>
+                                                        <td>
+                                                            <span
+                                                                class="badge bg-{{ 'success' if result.status == 'PASSED' else 'danger' if result.status == 'FAILED' or result.status == 'ERROR' else 'warning' }}">
+                                                                {{ result.status }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info mt-3">
+                                    <i class="bi bi-info-circle me-2"></i>No test executions yet. Go to the "Tests" tab
+                                    to execute your test cases.
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Welcome Screen when no project is selected -->
+                <div class="card shadow">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-robot display-1 text-primary mb-4"></i>
+                        <h2>Welcome to UI Test Generator</h2>
+                        <p class="lead">Generate automated tests from your UI source code with AI assistance</p>
+                        <p class="mb-4">
+                            This tool scans your UI source files, identifies elements, creates Page Object Models,
+                            and generates test scripts using Gemini 1.5 Flash AI.
+                        </p>
+                        <button class="btn btn-lg btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#createProjectModal">
+                            <i class="bi bi-plus-circle me-2"></i>Create Your First Project
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Features Overview -->
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="bi bi-search display-4 text-primary mb-3"></i>
+                                <h4>Element Discovery</h4>
+                                <p>Automatically scan and identify UI components from HTML, JSX, TSX, and Vue files</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="bi bi-layers display-4 text-success mb-3"></i>
+                                <h4>POM Generation</h4>
+                                <p>Create structured Page Object Models with selectors and methods for test automation
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="bi bi-cpu display-4 text-info mb-3"></i>
+                                <h4>AI-Powered Tests</h4>
+                                <p>Generate comprehensive test cases using Gemini 1.5 Flash API</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Project Modal -->
+    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Create New Project</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('create_project') }}" method="post" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Project Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Upload Source Files</label>
+                            <input type="file" class="form-control" id="file" name="file" multiple required>
+                            <div class="form-text">
+                                Upload HTML, JSX, TSX, Vue, JS files or a ZIP archive containing your UI source code.
+                                You can select multiple files by holding Ctrl (or Cmd on Mac) while selecting.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Help & Documentation</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>How to Use UI Test Generator</h5>
+                    <p>This tool helps you automatically generate test cases from your UI source code using AI
+                        assistance.</p>
+
+                    <h6 class="mt-4">1. Create a Project</h6>
+                    <p>
+                        Start by creating a new project and uploading your UI source code. You can upload individual
+                        HTML, JSX, TSX, or Vue files, or a ZIP archive containing multiple files.
+                    </p>
+
+                    <h6 class="mt-3">2. Scan UI Elements</h6>
+                    <p>
+                        Once your project is created, go to the dashboard and click "Scan UI Elements" to analyze your
+                        source code.
+                        The scanner will identify interactive elements like buttons, inputs, links, and forms.
+                    </p>
+
+                    <h6 class="mt-3">3. Generate Page Object Model (POM)</h6>
+                    <p>
+                        After scanning, click "Generate POM" to create a structured representation of your UI elements.
+                        This will group elements by page and create appropriate selectors for each element.
+                    </p>
+
+                    <h6 class="mt-3">4. Generate Test Cases</h6>
+                    <p>
+                        With the POM in place, click "Generate Tests" to create Python test scripts using Selenium
+                        WebDriver.
+                        The Gemini 1.5 Flash API is used to intelligently design test cases based on your UI components.
+                    </p>
+
+                    <h6 class="mt-3">5. Execute Tests</h6>
+                    <p>
+                        Finally, you can execute the generated tests and view the results. The system will show you
+                        which tests passed or failed, and provide detailed logs for debugging.
+                    </p>
+
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Note:</strong> For test execution to work properly, make sure you have Chrome and the
+                        appropriate
+                        WebDriver installed on your system. The tests use the webdriver-manager package to handle
+                        WebDriver installation.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap and JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Enable tooltips
+        document.addEventListener('DOMContentLoaded', function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Auto hide alerts after 5 seconds
+            setTimeout(function () {
+                var alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function (alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+
+</html>
