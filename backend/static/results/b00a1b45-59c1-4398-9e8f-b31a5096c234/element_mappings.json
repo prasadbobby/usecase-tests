@@ -1,0 +1,15 @@
+{
+  "DashboardPage": {
+    "8ca77a5b-538c-4ee6-8ea0-0b03a8c07a06": "dashboard_ul_",
+    "b604e48a-d4df-4816-9a83-652f06d7945c": "dashboard_input_",
+    "f7a2008a-0f46-4a59-878c-dcc6a300ca6f": "dashboard_div_dashboard_card",
+    "b0efdea9-7f47-45be-bd3f-f01be0484625": "dashboard_div_dashboard_card_1",
+    "2790abdf-15ac-427b-b5d0-6f50f25b3a28": "dashboard_div_dashboard_card_2"
+  },
+  "LiPage": {},
+  "DivPage": {},
+  "SpanPage": {
+    "1256c031-a96c-4c6a-90c9-685088559b31": "span__",
+    "afd4e9ba-83f4-49c3-9b8e-3b82f393dcc1": "span___1"
+  }
+}

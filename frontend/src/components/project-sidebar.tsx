@@ -1,74 +1,82 @@
 // src/components/project-sidebar.tsx
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Project } from '@/types';
-import { PlusCircle, Folder } from 'lucide-react';
+import { Bot, PlusCircle, Search } from 'lucide-react';
 import { WorkflowGuide } from './workflow-guide';
-
-interface ProjectSidebarProps {
-  projects: Project[];
-  selectedProject?: Project | null;
-  openCreateProjectDialog: () => void;
-}
+import { useState } from 'react';
 
 export function ProjectSidebar({ 
   projects, 
   selectedProject, 
   openCreateProjectDialog 
-}: ProjectSidebarProps) {
-  const router = useRouter();
+}) {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredProjects = searchQuery.trim() 
+    ? projects.filter(p => 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : projects;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="border rounded-lg shadow-sm overflow-hidden">
-        {/* Change this div to use purple-gradient class */}
-        <div className="purple-gradient p-4">
-          <h3 className="text-lg font-semibold flex items-center">
-            <Folder className="mr-2 h-5 w-5" />
-            Projects
+    <div className="w-64 border-r bg-white min-h-full flex-shrink-0 overflow-auto">
+      <div className="p-4">
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search projects..."
+            className="w-full pl-9 pr-3 py-2 rounded-md border border-gray-200 text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        
+        <div className="mb-2">
+          <h3 className="text-xs uppercase text-gray-500 font-semibold px-2">
+            My Projects
           </h3>
         </div>
-        <div className="divide-y">
-          {projects?.length > 0 ? (
-            projects.map((project) => (
+        
+        <div className="space-y-1 mb-4">
+          {filteredProjects && filteredProjects.length > 0 ? (
+            filteredProjects.map((project) => (
               <Link
                 key={project.id}
                 href={`/dashboard/${project.id}`}
-                className={`block p-4 transition-all duration-200 hover-lift ${
+                className={`block px-3 py-2 rounded-md text-sm ${
                   selectedProject?.id === project.id 
-                    ? 'border-l-4 border-[#8626c3] bg-[#8626c3]/5' 
-                    : 'border-l-4 border-transparent'
+                    ? 'bg-[#8626c3]/10 text-[#8626c3] font-medium' 
+                    : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <div className="flex justify-between items-start">
-                  <h3 className="font-medium">{project.name}</h3>
-                  <span className="text-xs text-gray-500">
-                    {new Date(project.created_at).toLocaleDateString()}
-                  </span>
+                <div className="flex items-center">
+                  <Bot className={`h-4 w-4 mr-2 ${
+                    selectedProject?.id === project.id ? 'text-[#8626c3]' : 'text-gray-400'
+                  }`} />
+                  <span className="truncate">{project.name}</span>
                 </div>
-                <p className="text-sm text-gray-500 truncate mt-1">
-                  {project.description || 'No description'}
-                </p>
               </Link>
             ))
           ) : (
-            <div className="p-4 text-center text-gray-500">
-              No projects yet. Create one to get started!
-            </div>
+            <p className="text-sm text-gray-500 px-3 py-2">
+              {searchQuery ? 'No matching projects found' : 'No projects yet'}
+            </p>
           )}
         </div>
-        <div className="p-3 bg-gray-50">
-          <button 
-            onClick={openCreateProjectDialog} 
-            className="w-full bg-[#8626c3] text-white py-2 px-4 rounded-md flex items-center justify-center hover:bg-[#8626c3]/90"
-          >
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Create Project
-          </button>
-        </div>
+        
+        <button
+          onClick={openCreateProjectDialog}
+          className="w-full text-sm py-2 px-3 rounded-md bg-[#8626c3] text-white flex items-center justify-center"
+        >
+          <PlusCircle className="h-4 w-4 mr-2" />
+          New Project
+        </button>
       </div>
-
-      <WorkflowGuide />
+      
+      <div className="px-4 pb-4">
+        <WorkflowGuide />
+      </div>
     </div>
   );
 }

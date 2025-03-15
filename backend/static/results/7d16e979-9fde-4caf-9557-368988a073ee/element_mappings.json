@@ -1,0 +1,46 @@
+{
+  "DashboardPage": {
+    "984967c9-b7db-42de-a41f-e4edf6843de1": "dashboard_ul_",
+    "3dd2fb33-48a8-4f42-a8dc-8fe69409677a": "dashboard_ul__1",
+    "2ffcd299-4f01-4a83-ad1e-897095dab323": "dashboard_input_",
+    "ea3bc767-4c5a-4054-8afe-70e26b8209d7": "dashboard_input__1"
+  },
+  "LiPage": {},
+  "DivPage": {},
+  "SpanPage": {},
+  "IndexPage": {
+    "f7e16617-1770-4617-a850-6c67bd225640": "index_nav_navbar",
+    "fa04b3c9-6bb0-4fa6-83fe-33480d42e65a": "index_ul_navbar_nav",
+    "e8bb15ed-fc05-48f0-bccf-74cfd3992d9e": "index_ul_list_group",
+    "0c469bad-35bb-4465-92df-ae5844bc7b50": "index_a_list_group_item",
+    "7beda4e8-3592-426e-9b75-ca65db1bc077": "index_table_table",
+    "3a48596e-5882-4ba2-a092-2e1a9e92113e": "index_table_table_1",
+    "39ec6c7f-ba1d-457e-9602-55011990c1c8": "index_tr_",
+    "ed586808-c491-44b2-a2e2-67a1c8d5d7e4": "index_td_",
+    "1c4c2b2c-5e07-4afa-b977-0928b136ae8c": "index_tr__1",
+    "e6cb9480-9f33-4612-9233-e9bc0c0ad3e0": "index_button_accordion_button",
+    "9cd4c1d3-0756-40fb-afcb-bca01c9ce2de": "index_li_list_group_item",
+    "c32c83a3-c59a-4af8-9610-068a88455baf": "index_form_"
+  },
+  "APage": {},
+  "ButtonPage": {
+    "5e8d7dab-cebe-4783-bcf9-12e9d57c8043": "button_cancel"
+  },
+  "FormPage": {},
+  "InputPage": {
+    "bc8f2344-e6b5-469f-8cc6-15a56686f7b3": "input_name"
+  },
+  "TrPage": {
+    "2b7da217-aede-445a-ba49-9a7425ff56a3": "tr_name_type_selector_t",
+    "5714a313-1df5-41f2-9bd4-8cc1ae744601": "tr_test_status"
+  },
+  "TdPage": {},
+  "LabelPage": {
+    "65e059c1-56c3-4efd-98a2-de1f00d69004": "label_project_name",
+    "32f4d03e-c9e8-4c13-b892-ee1d08cc3f3e": "label_description",
+    "457a7083-022c-4791-a3fc-1a18e5cef537": "label_upload_source_files"
+  },
+  "TextareaPage": {
+    "e9bdfeee-894c-4d75-a312-c8f82d9fd578": "textarea_description"
+  }
+}

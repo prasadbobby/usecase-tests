@@ -3,11 +3,10 @@
 
 import { useState, useEffect } from 'react';
 import { fetchProjects } from '@/lib/api';
-import { Project } from '@/types';
-import { ProjectSidebar } from '@/components/project-sidebar';
 import { CreateProjectDialog } from '@/components/create-project-dialog';
 import { HelpDialog } from '@/components/help-dialog';
 import { Header } from '@/components/header';
+import { ProjectSidebar } from '@/components/project-sidebar';
 
 export default function DashboardLayout({
   children,
@@ -16,8 +15,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
   params: { projectId?: string };
 }) {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
 
@@ -42,26 +41,24 @@ export default function DashboardLayout({
   }, [params.projectId]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
       <Header 
         openCreateProjectDialog={() => setCreateDialogOpen(true)}
         openHelpDialog={() => setHelpDialogOpen(true)}
       />
       
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-1/4">
-            <ProjectSidebar 
-              projects={projects} 
-              selectedProject={selectedProject} 
-              openCreateProjectDialog={() => setCreateDialogOpen(true)} 
-            />
-          </div>
-          
-          <div className="w-full lg:w-3/4 fade-in">
+      <div className="flex bg-gray-50 min-h-[calc(100vh-64px)]">
+        <ProjectSidebar 
+          projects={projects}
+          selectedProject={selectedProject}
+          openCreateProjectDialog={() => setCreateDialogOpen(true)}
+        />
+        
+        <main className="flex-1 p-6 overflow-auto">
+          <div className="max-w-6xl mx-auto">
             {children}
           </div>
-        </div>
+        </main>
       </div>
       
       <CreateProjectDialog 
@@ -73,6 +70,6 @@ export default function DashboardLayout({
         open={helpDialogOpen} 
         onOpenChange={setHelpDialogOpen} 
       />
-    </div>
+    </>
   );
 }

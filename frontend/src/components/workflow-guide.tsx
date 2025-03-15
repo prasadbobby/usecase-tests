@@ -1,7 +1,7 @@
 // src/components/workflow-guide.tsx
 import { useState, useEffect } from 'react';
-import { Upload, Search, Layers, Code, Play, Info, Check, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { Upload, Search, Layers, Code, Play, Info, Check, X } from 'lucide-react';
 import { 
   getProjectElements, 
   getProjectPoms, 
@@ -11,215 +11,184 @@ import {
 
 export function WorkflowGuide() {
   const pathname = usePathname();
-  const [activeStep, setActiveStep] = useState(1);
-  const [elementsGenerated, setElementsGenerated] = useState(false);
-  const [pomGenerated, setPomGenerated] = useState(false);
-  const [testsGenerated, setTestsGenerated] = useState(false);
-  const [executionsCompleted, setExecutionsCompleted] = useState(false);
-  const [executionsSuccess, setExecutionsSuccess] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  const projectId = pathname.split('/')[2]; // Get project ID from URL
-
-  // Determine the active step based on the current path
-  useEffect(() => {
-    if (pathname.includes('/elements')) {
-      setActiveStep(2);
-    } else if (pathname.includes('/pom')) {
-      setActiveStep(3);
-    } else if (pathname.includes('/tests')) {
-      setActiveStep(4);
-    } else if (pathname.includes('/executions')) {
-      setActiveStep(5);
-    } else {
-      setActiveStep(1);
-    }
-  }, [pathname]);
-
-  // Check project status
+  const projectId = pathname.split('/')[2]; // Extract project ID from URL
+  
+  const [elementsStatus, setElementsStatus] = useState({ complete: false, success: false });
+  const [pomStatus, setPomStatus] = useState({ complete: false, success: false });
+  const [testsStatus, setTestsStatus] = useState({ complete: false, success: false });
+  const [executionsStatus, setExecutionsStatus] = useState({ complete: false, success: false });
+  const [loading, setLoading] = useState(false);
+  
+  // Determine active step based on URL
+  const getActiveStep = () => {
+    if (pathname.includes('/elements')) return 2;
+    if (pathname.includes('/pom')) return 3;
+    if (pathname.includes('/tests')) return 4;
+    if (pathname.includes('/executions')) return 5;
+    return 1;
+  };
+  
+  const activeStep = getActiveStep();
+  
+  // Fetch status data for the project
   useEffect(() => {
     if (!projectId) return;
     
-    const checkProjectStatus = async () => {
+    const fetchStatus = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
         // Check elements
         const elements = await getProjectElements(projectId);
-        setElementsGenerated(elements && elements.length > 0);
+        const hasElements = elements && elements.length > 0;
+        setElementsStatus({ complete: true, success: hasElements });
         
         // Check POMs
         const poms = await getProjectPoms(projectId);
-        setPomGenerated(poms && poms.length > 0);
+        const hasPoms = poms && poms.length > 0;
+        setPomStatus({ complete: hasElements, success: hasPoms });
         
         // Check tests
         const tests = await getProjectTests(projectId);
-        setTestsGenerated(tests && tests.length > 0);
+        const hasTests = tests && tests.length > 0;
+        setTestsStatus({ complete: hasPoms, success: hasTests });
         
         // Check executions
         const executions = await getProjectExecutions(projectId);
         if (executions && executions.length > 0) {
-          setExecutionsCompleted(true);
-          // Check if any successful executions
           const successfulExecution = executions.some(exec => exec.status === 'SUCCESS');
-          setExecutionsSuccess(successfulExecution);
+          setExecutionsStatus({ complete: true, success: successfulExecution });
+        } else {
+          setExecutionsStatus({ complete: false, success: false });
         }
       } catch (error) {
-        console.error('Error checking project status:', error);
+        console.error('Error fetching status:', error);
       } finally {
         setLoading(false);
       }
     };
     
-    checkProjectStatus();
+    fetchStatus();
   }, [projectId, pathname]);
 
+  // Define steps with their statuses
+  const steps = [
+    { 
+      id: 1, 
+      title: 'Upload Source Code', 
+      description: 'Upload your UI source files', 
+      icon: <Upload size={16} />,
+      active: activeStep >= 1,
+      complete: true, // Always complete since project exists
+      success: true
+    },
+    { 
+      id: 2, 
+      title: 'Scan UI Elements', 
+      description: 'Extract interactive elements', 
+      icon: <Search size={16} />,
+      active: activeStep >= 2,
+      complete: elementsStatus.complete,
+      success: elementsStatus.success
+    },
+    { 
+      id: 3, 
+      title: 'Generate POM', 
+      description: 'Create Page Object Models', 
+      icon: <Layers size={16} />,
+      active: activeStep >= 3,
+      complete: pomStatus.complete,
+      success: pomStatus.success
+    },
+    { 
+      id: 4, 
+      title: 'Generate Tests', 
+      description: 'Create test scripts with AI', 
+      icon: <Code size={16} />,
+      active: activeStep >= 4,
+      complete: testsStatus.complete,
+      success: testsStatus.success
+    },
+    { 
+      id: 5, 
+      title: 'Execute Tests', 
+      description: 'Run tests and view results', 
+      icon: <Play size={16} />,
+      active: activeStep >= 5,
+      complete: executionsStatus.complete,
+      success: executionsStatus.success
+    },
+  ];
+
   return (
-    <div className="border rounded-lg shadow-sm overflow-hidden">
-      <div className="purple-gradient p-4">
-        <h3 className="text-lg font-semibold flex items-center">
-          <Info className="mr-2 h-5 w-5" />
-          Workflow Guide
-        </h3>
-      </div>
-      <div className="p-4">
-        <div className="space-y-6">
-          <WorkflowStep
-            number={1}
-            title="Upload Source Code"
-            description="Upload your UI source code files"
-            icon={<Upload className="h-4 w-4" />}
-            isActive={activeStep >= 1}
-            isCompleted={true} // Always completed since project exists
-            status="success"
-          />
-          
-          <WorkflowStep
-            number={2}
-            title="Scan UI Elements"
-            description="Extract interactive elements from source"
-            icon={<Search className="h-4 w-4" />}
-            isActive={activeStep >= 2}
-            isCompleted={elementsGenerated}
-            status={elementsGenerated ? "success" : activeStep > 2 ? "error" : "pending"}
-            loading={loading && activeStep === 2}
-          />
-          
-          <WorkflowStep
-            number={3}
-            title="Generate POM"
-            description="Create Page Object Models"
-            icon={<Layers className="h-4 w-4" />}
-            isActive={activeStep >= 3}
-            isCompleted={pomGenerated}
-            status={pomGenerated ? "success" : activeStep > 3 ? "error" : "pending"}
-            loading={loading && activeStep === 3}
-          />
-          
-          <WorkflowStep
-            number={4}
-            title="Generate Tests"
-            description="Create test scripts using Gemini AI"
-            icon={<Code className="h-4 w-4" />}
-            isActive={activeStep >= 4}
-            isCompleted={testsGenerated}
-            status={testsGenerated ? "success" : activeStep > 4 ? "error" : "pending"}
-            loading={loading && activeStep === 4}
-          />
-          
-          <WorkflowStep
-            number={5}
-            title="Execute Tests"
-            description="Run tests and view results"
-            icon={<Play className="h-4 w-4" />}
-            isActive={activeStep >= 5}
-            isCompleted={executionsCompleted}
-            status={
-              executionsCompleted 
-                ? executionsSuccess ? "success" : "error" 
-                : "pending"
-            }
-            loading={loading && activeStep === 5}
-            isLast
-          />
+    <div className="border rounded-lg overflow-hidden shadow-sm">
+      <div className="purple-gradient p-3">
+        <div className="flex items-center">
+          <Info className="h-4 w-4 mr-2 text-white" />
+          <h3 className="text-sm font-medium text-white">Workflow Guide</h3>
         </div>
       </div>
-    </div>
-  );
-}
-
-interface WorkflowStepProps {
-  number: number;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  isActive: boolean;
-  isCompleted: boolean;
-  status: "success" | "error" | "pending";
-  loading?: boolean;
-  isLast?: boolean;
-}
-
-function WorkflowStep({ 
-  number, 
-  title, 
-  description, 
-  icon, 
-  isActive, 
-  isCompleted, 
-  status,
-  loading = false,
-  isLast = false 
-}: WorkflowStepProps) {
-  return (
-    <div className="relative">
-      {!isLast && (
-        <div 
-          className={`absolute left-5 top-10 w-[2px] h-[calc(100%-20px)] transition-all duration-500 ${
-            isActive 
-              ? status === "success" 
-                ? "bg-green-500" 
-                : status === "error" 
-                  ? "bg-red-500" 
-                  : "bg-[#8626c3]" 
-              : "bg-gray-200"
-          }`}
-        />
-      )}
-      <div className="flex">
-        <div 
-          className={`flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full z-10 transition-all duration-500 ${
-            isActive 
-              ? isCompleted 
-                ? status === "success" 
-                  ? "bg-green-500 text-white" 
-                  : "bg-red-500 text-white" 
-                : "bg-[#8626c3] text-white ring-4 ring-[#8626c3]/20" 
-              : "bg-gray-200 text-gray-500"
-          } ${loading ? "animate-pulse" : ""}`}
-        >
-          {isCompleted ? (
-            status === "success" ? (
-              <Check className="h-5 w-5" />
-            ) : (
-              <X className="h-5 w-5" />
-            )
-          ) : (
-            number
-          )}
-        </div>
-        <div className={isActive ? "opacity-100" : "opacity-70"}>
-          <h3 className={`font-medium flex items-center ${
-            isActive 
-              ? status === "success" 
-                ? "text-green-600" 
-                : status === "error" 
-                  ? "text-red-600" 
-                  : "text-[#8626c3]" 
-              : "text-gray-500"
-          }`}>
-            {icon} <span className="ml-2">{title}</span>
-          </h3>
-          <p className={`text-sm ${isActive ? "text-gray-700" : "text-gray-400"}`}>{description}</p>
+      
+      <div className="p-3 bg-white">
+        <div className="space-y-4">
+          {steps.map((step, index) => (
+            <div key={step.id} className="relative">
+              {index < steps.length - 1 && (
+                <div 
+                  className={`absolute left-[11px] top-6 w-[2px] h-[calc(100%-12px)] ${
+                    step.active 
+                      ? step.complete 
+                        ? step.success ? 'bg-green-500' : 'bg-red-500'
+                        : 'bg-[#8626c3]' 
+                      : 'bg-gray-200'
+                  }`}
+                />
+              )}
+              
+              <div className="flex">
+                <div 
+                  className={`flex-shrink-0 flex items-center justify-center w-[22px] h-[22px] rounded-full z-10 ${
+                    step.active 
+                      ? step.complete 
+                        ? step.success ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                        : 'bg-[#8626c3] text-white' 
+                      : 'bg-gray-200 text-gray-500'
+                  } ${loading && step.id === activeStep ? 'animate-pulse' : ''}`}
+                >
+                  {step.complete ? (
+                    step.success ? (
+                      <Check size={12} />
+                    ) : (
+                      <X size={12} />
+                    )
+                  ) : (
+                    <span className="text-xs">{step.id}</span>
+                  )}
+                </div>
+                
+                <div className="ml-3">
+                  <div className="flex items-center">
+                    {step.icon && <span className={`mr-1 ${
+                      step.active 
+                        ? step.complete 
+                          ? step.success ? 'text-green-500' : 'text-red-500' 
+                          : 'text-[#8626c3]' 
+                        : 'text-gray-400'
+                    }`}>{step.icon}</span>}
+                    <h4 className={`text-xs font-medium ${
+                      step.active 
+                        ? step.complete 
+                          ? step.success ? 'text-green-500' : 'text-red-500' 
+                          : 'text-[#8626c3]' 
+                        : 'text-gray-700'
+                    }`}>
+                      {step.title}
+                    </h4>
+                  </div>
+                  <p className="text-xs text-gray-500">{step.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

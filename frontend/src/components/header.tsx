@@ -9,9 +9,9 @@ interface HeaderProps {
 
 export function Header({ openCreateProjectDialog, openHelpDialog }: HeaderProps) {
   return (
-    <header className="purple-gradient shadow-md">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+    <header className="purple-gradient shadow-sm h-16">
+      <div className="container mx-auto px-4 h-full">
+        <div className="flex items-center justify-between h-full">
           <div className="flex items-center">
             <Link href="/" className="flex items-center mr-6">
               <Bot className="h-6 w-6 mr-2 text-white" />

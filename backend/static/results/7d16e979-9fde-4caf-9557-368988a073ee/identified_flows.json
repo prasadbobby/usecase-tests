@@ -1,0 +1,702 @@
+[
+  {
+    "id": "986a05c8-7963-4b02-9d74-028602cf1d3e",
+    "name": "IndexPage_navigate_to_index_a_list-group-item",
+    "type": "navigation",
+    "page": "IndexPage",
+    "description": "Navigate from IndexPage to {{ url_for('index', project=project.id) }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "IndexPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "index_a_list-group-item",
+        "element_id": "0c469bad-35bb-4465-92df-ae5844bc7b50"
+      }
+    ]
+  },
+  {
+    "id": "6635cbd4-73b7-4147-b449-bbe96e7c2616",
+    "name": "APage_navigate_to_a_ui_test_generator",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to /",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_ui_test_generator",
+        "element_id": "6f5c63b0-5a88-4c1c-a076-a5e4bb35b96c"
+      }
+    ]
+  },
+  {
+    "id": "3cbbd2e2-8f9f-4368-b03a-10da78f316a5",
+    "name": "APage_navigate_to_a_dashboard",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to /",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_dashboard",
+        "element_id": "2849ade6-a82f-49bd-ad9b-61d9def21b59"
+      }
+    ]
+  },
+  {
+    "id": "a0adfca4-3dfc-46a0-bf7e-f7e2a7cd8516",
+    "name": "APage_navigate_to_a_dashboard",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('index', project=selected_project.id, tab='dashboard') }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_dashboard",
+        "element_id": "9383f428-8e71-4035-a838-66bd577384b1"
+      }
+    ]
+  },
+  {
+    "id": "7377ad39-0278-4db0-baec-25149cff1a0d",
+    "name": "APage_navigate_to_a_ui_elements",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('index', project=selected_project.id, tab='elements') }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_ui_elements",
+        "element_id": "cb9cecd6-180c-4ba4-9a86-49852edffc33"
+      }
+    ]
+  },
+  {
+    "id": "d807fbb2-fd49-4826-9ed4-8b6b7ba0407d",
+    "name": "APage_navigate_to_a_page_objects",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('index', project=selected_project.id, tab='pom') }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_page_objects",
+        "element_id": "b1822df4-7712-4262-9146-a302b2711425"
+      }
+    ]
+  },
+  {
+    "id": "e5546378-bcc7-4a2a-83b2-c2a5dfbf4a25",
+    "name": "APage_navigate_to_a_test_cases",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('index', project=selected_project.id, tab='tests') }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_test_cases",
+        "element_id": "94fc2b0f-cf91-42fa-93f6-f84e1a0476ea"
+      }
+    ]
+  },
+  {
+    "id": "f3ac9db9-51ce-4dcb-950c-89a65dd06aa7",
+    "name": "APage_navigate_to_a_executions",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('index', project=selected_project.id, tab='executions') }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_executions",
+        "element_id": "3e949065-554b-4695-b1b0-2d4131f5bf4a"
+      }
+    ]
+  },
+  {
+    "id": "7f904733-33dd-41f5-bb0f-307da58525a7",
+    "name": "APage_navigate_to_a_view_code",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('view_code', test_id=test.id) }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_view_code",
+        "element_id": "b87e9ff6-4331-4c35-9966-62483cea03a6"
+      }
+    ]
+  },
+  {
+    "id": "457ac2fb-70b1-48d3-89ca-254cb5507018",
+    "name": "APage_navigate_to_a_download_log",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('download_file', filename=execution.log_path) }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_download_log",
+        "element_id": "5ebf0170-04ff-4145-9ba0-ef48bf3d13fb"
+      }
+    ]
+  },
+  {
+    "id": "ab3c58d9-d98d-4ff1-8c8c-eba4f4e682d7",
+    "name": "APage_navigate_to_a_download_pom_json",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('download_file', filename=pom.file_path) }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_download_pom_json",
+        "element_id": "5378b8a6-cf4f-4a01-b61d-baa1d799963b"
+      }
+    ]
+  },
+  {
+    "id": "cdbdf08c-c4b4-4673-9f1e-4ce0c44ab594",
+    "name": "APage_navigate_to_a_export_as_csv",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('export_pom_csv', project_id=selected_project.id, pom_id=pom.id) }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_export_as_csv",
+        "element_id": "88ca87a3-cf02-4a01-b105-6c9a1c3e5555"
+      }
+    ]
+  },
+  {
+    "id": "9fe8dec8-ceee-4f7d-bc2d-52acdb15d02b",
+    "name": "APage_navigate_to_a_download_all_tests_a",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('download_all_tests', project_id=selected_project.id) }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_download_all_tests_a",
+        "element_id": "5983ef03-b466-40ec-bd4c-3618c35955fc"
+      }
+    ]
+  },
+  {
+    "id": "56237f9c-cf74-434f-a92b-ee9e0fa9b7bd",
+    "name": "APage_navigate_to_a_view_code",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('view_code', test_id=test.id) }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_view_code",
+        "element_id": "ca63e6c9-8f4a-46d5-9dab-b3856916502d"
+      }
+    ]
+  },
+  {
+    "id": "9cefb123-54d3-442a-819d-ab0744bb8a22",
+    "name": "APage_navigate_to_a_download_log",
+    "type": "navigation",
+    "page": "APage",
+    "description": "Navigate from APage to {{ url_for('download_file', filename=execution.log_path) }}",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "APage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "a_download_log",
+        "element_id": "8e8fc6d6-82e6-4176-9dcc-ef683a458a2e"
+      }
+    ]
+  },
+  {
+    "id": "3d8f6f30-e403-4c53-9286-01906bae02bc",
+    "name": "IndexPage_click_index_button_accordion-button",
+    "type": "interaction",
+    "page": "IndexPage",
+    "description": "Click index_button_accordion-button on IndexPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "IndexPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "index_button_accordion-button",
+        "element_id": "e6cb9480-9f33-4612-9233-e9bc0c0ad3e0"
+      }
+    ]
+  },
+  {
+    "id": "611224f6-a64a-4c3b-b63c-e484b21fc831",
+    "name": "ButtonPage_click_button_",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_ on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_",
+        "element_id": "db85cb6e-2ce6-40b5-b5eb-77ca1dbd3130"
+      }
+    ]
+  },
+  {
+    "id": "008d5e9e-6aa5-4ab6-b0f1-08ccbcc0509e",
+    "name": "ButtonPage_click_button_close",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_close on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_close",
+        "element_id": "a139c8e4-36f2-4132-ba9c-e820b9206c72"
+      }
+    ]
+  },
+  {
+    "id": "3b4c826d-0dc9-41a2-9759-c5d764637442",
+    "name": "ButtonPage_click_button_create_project",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_create_project on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_create_project",
+        "element_id": "29b1ec66-6e36-46cf-8c82-415a5534903c"
+      }
+    ]
+  },
+  {
+    "id": "7cf4b959-470d-4f42-8416-c9fac959f61d",
+    "name": "ButtonPage_click_button_scan_ui_elements",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_scan_ui_elements on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_scan_ui_elements",
+        "element_id": "e5e726b1-f7e1-4a5d-9b63-e16203b64803"
+      }
+    ]
+  },
+  {
+    "id": "a201b1a0-6694-4b71-81a9-8737cf1da120",
+    "name": "ButtonPage_click_button_generate_pom",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_generate_pom on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_generate_pom",
+        "element_id": "7be75f84-8b80-4afd-9b9c-4bd5bb10d6f0"
+      }
+    ]
+  },
+  {
+    "id": "098bd146-6b96-4377-93db-f8a9f965fb69",
+    "name": "ButtonPage_click_button_generate_tests",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_generate_tests on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_generate_tests",
+        "element_id": "b1306616-edf0-42d6-8b93-c1529b7ba58b"
+      }
+    ]
+  },
+  {
+    "id": "ce993ba4-a426-45e0-a1d1-1bb4fa0d36d5",
+    "name": "ButtonPage_click_button_scan_source_code",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_scan_source_code on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_scan_source_code",
+        "element_id": "15a689ba-1e48-4358-a66b-e6c3da5bfeef"
+      }
+    ]
+  },
+  {
+    "id": "55085852-61ea-45b7-9304-1b0b88061276",
+    "name": "ButtonPage_click_button_generate_page_object",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_generate_page_object on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_generate_page_object",
+        "element_id": "5e3fccf8-4726-4470-8407-33358d3c6082"
+      }
+    ]
+  },
+  {
+    "id": "9521f44b-2fa1-4495-bbe0-e06fe69cfdf6",
+    "name": "ButtonPage_click_button_generate_pom",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_generate_pom on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_generate_pom",
+        "element_id": "483a94bf-8d30-4726-acc3-ef3f23c3d102"
+      }
+    ]
+  },
+  {
+    "id": "91d0c825-5f5c-459d-a6be-54180e359c50",
+    "name": "ButtonPage_click_button_generate_tests",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_generate_tests on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_generate_tests",
+        "element_id": "da64c1b9-6ac2-4aba-8661-80514a3c27b0"
+      }
+    ]
+  },
+  {
+    "id": "dd91c7aa-cd43-4a0f-9d7b-4d27e914e048",
+    "name": "ButtonPage_click_button_generate_tests",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_generate_tests on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_generate_tests",
+        "element_id": "a6f0daed-fb09-430c-b130-c1966009e54a"
+      }
+    ]
+  },
+  {
+    "id": "5e257acd-ed98-4ae9-852e-baeeeab734aa",
+    "name": "ButtonPage_click_button_execute_test",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_execute_test on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_execute_test",
+        "element_id": "d5679185-ff2c-4292-9d1b-e72821194b60"
+      }
+    ]
+  },
+  {
+    "id": "c8719208-4461-436c-a99a-9f9b31da2776",
+    "name": "ButtonPage_click_button_view_log",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_view_log on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_view_log",
+        "element_id": "db046dd8-db62-409b-a183-e1a0834c6a10"
+      }
+    ]
+  },
+  {
+    "id": "eb3544a0-3ab0-4752-b54d-d6fc18b977ab",
+    "name": "ButtonPage_click_button_create_your_first_pr",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_create_your_first_pr on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_create_your_first_pr",
+        "element_id": "de19d744-79bb-4d6f-a07b-038ba38256b9"
+      }
+    ]
+  },
+  {
+    "id": "c314434d-7447-4973-933d-f2f85ccb3512",
+    "name": "ButtonPage_click_button_close",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_close on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_close",
+        "element_id": "d997d199-db63-4a30-9b9f-35413c181457"
+      }
+    ]
+  },
+  {
+    "id": "6b50d5f1-09a5-407b-8147-10c292679e47",
+    "name": "ButtonPage_click_button_create_project",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_create_project on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_create_project",
+        "element_id": "e2d62968-ddaf-4e6a-a779-22e057812b45"
+      }
+    ]
+  },
+  {
+    "id": "beb6a9ed-da43-4282-a05f-eed7bbc778c1",
+    "name": "ButtonPage_click_button_close",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_close on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_close",
+        "element_id": "8efb2ac4-abe5-4924-b23d-62a8475ec255"
+      }
+    ]
+  },
+  {
+    "id": "fefb0d36-ef00-4466-b1c2-01afa6ab8efb",
+    "name": "ButtonPage_click_button_got_it_",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_got_it_ on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_got_it_",
+        "element_id": "d12b997a-39ff-4859-ab7f-fd8ccb9f7c92"
+      }
+    ]
+  },
+  {
+    "id": "8fd2b5cb-7917-494f-b9e2-858e798dc2b3",
+    "name": "ButtonPage_click_button_action_section",
+    "type": "interaction",
+    "page": "ButtonPage",
+    "description": "Click button_action_section on ButtonPage",
+    "steps": [
+      {
+        "step": 1,
+        "action": "navigate",
+        "target": "ButtonPage"
+      },
+      {
+        "step": 2,
+        "action": "click",
+        "target": "button_action_section",
+        "element_id": "7f0f7ecf-b11b-417e-b4d9-630bd1738ca9"
+      }
+    ]
+  }
+]
