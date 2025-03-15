@@ -15,6 +15,7 @@ from typing import List, Dict, Any
 import subprocess
 import datetime
 import traceback
+from flask_cors import CORS
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG,
@@ -44,6 +45,7 @@ else:
     logger.warning("Gemini API key not properly configured")
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000"]}})
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['RESULTS_FOLDER'] = RESULTS_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 256 * 1024 * 1024  # 256MB max upload
@@ -2622,6 +2624,264 @@ def export_pom_csv(project_id, pom_id):
         logger.error(f"Error exporting POM to CSV: {str(e)}")
         flash(f"Error exporting POM: {str(e)}", "error")
         return redirect(url_for('index', project=project_id, tab='pom'))
+
+@app.route('/api/projects', methods=['GET'])
+def api_get_projects():
+    try:
+        logger.info("GET /api/projects called")
+        projects = get_all_projects()
+        return jsonify(projects)
+    except Exception as e:
+        logger.error(f"Error in GET /api/projects: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/projects/<project_id>', methods=['GET'])
+def api_get_project(project_id):
+    try:
+        logger.info(f"GET /api/projects/{project_id} called")
+        project = get_project(project_id)
+        if not project:
+            return jsonify({"error": "Project not found"}), 404
+        return jsonify(project)
+    except Exception as e:
+        logger.error(f"Error in GET /api/projects/{project_id}: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/projects', methods=['POST'])
+def api_create_project():
+    try:
+        logger.info("POST /api/projects called")
+        logger.debug(f"Request form: {request.form}")
+        logger.debug(f"Request files: {request.files}")
+        
+        if 'file' not in request.files:
+            logger.warning("No file part in request")
+            return jsonify({"error": "No file part"}), 400
+        
+        files = request.files.getlist('file')
+        if not files or files[0].filename == '':
+            logger.warning("No selected file")
+            return jsonify({"error": "No selected file"}), 400
+        
+        project_id = str(uuid.uuid4())
+        project_dir = os.path.join(app.config['UPLOAD_FOLDER'], project_id)
+        os.makedirs(project_dir, exist_ok=True)
+        
+        # Save all files
+        file_paths = []
+        for file in files:
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(project_dir, filename)
+            file.save(file_path)
+            file_paths.append(file_path)
+            logger.info(f"Saved file to {file_path}")
+        
+        # If only one file, use it as source_path
+        # If multiple files, use the directory
+        if len(file_paths) == 1:
+            source_path = file_paths[0]
+            source_filename = os.path.basename(file_paths[0])
+        else:
+            source_path = project_dir
+            source_filename = "multiple_files"
+        
+        # Create project record in database
+        add_project(
+            project_id, 
+            request.form.get('name', 'Unnamed Project'),
+            request.form.get('description', ''),
+            source_filename,
+            source_path
+        )
+        
+        project = get_project(project_id)
+        logger.info(f"Project created successfully: {project_id}")
+        return jsonify(project), 201
+        
+    except Exception as e:
+        logger.error(f"Error creating project: {str(e)}")
+        logger.error(traceback.format_exc())  # Add this to get the full traceback
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/projects/<project_id>/scan', methods=['POST'])
+def api_scan_project(project_id):
+    try:
+        project = get_project(project_id)
+        if not project:
+            return jsonify({"error": "Project not found"}), 404
+        
+        elements = scan_source_code(project["source_path"])
+        
+        # Store elements in the database
+        save_elements(project_id, elements)
+        
+        return jsonify({"success": True, "elements_count": len(elements)})
+    
+    except Exception as e:
+        logger.error(f"Error scanning project: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/projects/<project_id>/elements', methods=['GET'])
+def api_get_elements(project_id):
+    elements = get_elements(project_id)
+    return jsonify(elements)
+
+@app.route('/api/projects/<project_id>/pom', methods=['POST'])
+def api_generate_pom(project_id):
+    try:
+        # Check if project exists
+        project = get_project(project_id)
+        if not project:
+            return jsonify({"error": "Project not found"}), 404
+        
+        # Get elements from scan or scan again if not available
+        elements = get_elements(project_id)
+        if not elements:
+            elements = scan_source_code(project["source_path"])
+            save_elements(project_id, elements)
+        
+        # Generate the POM
+        pom_data = generate_pom(elements, project_id)
+        
+        # Create POM record in database
+        pom_id = str(uuid.uuid4())
+        add_pom(pom_id, project_id, pom_data["file_path"], pom_data["elements"])
+        
+        return jsonify({"success": True, "pom_id": pom_id})
+    
+    except Exception as e:
+        logger.error(f"Error generating POM: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/projects/<project_id>/poms', methods=['GET'])
+def api_get_poms(project_id):
+    poms = get_poms(project_id)
+    return jsonify(poms)
+
+@app.route('/api/projects/<project_id>/tests', methods=['POST'])
+def api_generate_tests(project_id):
+    try:
+        # Check if project exists
+        project = get_project(project_id)
+        if not project:
+            return jsonify({"error": "Project not found"}), 404
+        
+        # Get POM ID from request
+        pom_id = request.json.get('pom_id')
+        
+        # Validate POM ID
+        pom = None
+        if pom_id:
+            pom = get_pom(pom_id)
+            if not pom or pom["project_id"] != project_id:
+                return jsonify({"error": "Invalid POM ID"}), 400
+        
+        # Fallback to first POM if not specified
+        if not pom:
+            poms = get_poms(project_id)
+            if not poms:
+                return jsonify({"error": "No POMs available"}), 400
+            pom = poms[0]
+            pom_id = pom["id"]
+        
+        # Generate tests
+        test_data = generate_tests(pom, project_id)
+        
+        # Check if test generation was successful
+        if test_data.get("success", False) and test_data.get("script_path"):
+            test_id = str(uuid.uuid4())
+            
+            # Save test case to database
+            add_test_case(
+                test_id,
+                project_id,
+                pom_id,
+                test_data["name"],
+                test_data["script_path"],
+                test_data["description"]
+            )
+            
+            return jsonify({"success": True, "test_id": test_id})
+        else:
+            return jsonify({"success": False, "message": test_data.get("description", "Test generation failed")}), 400
+        
+    except Exception as e:
+        logger.error(f"Error generating tests: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/projects/<project_id>/tests', methods=['GET'])
+def api_get_tests(project_id):
+    tests = get_test_cases(project_id)
+    return jsonify(tests)
+
+@app.route('/api/tests/<test_id>/code', methods=['GET'])
+def api_view_test_code(test_id):
+    try:
+        test_case = get_test_case(test_id)
+        if not test_case:
+            return jsonify({"error": "Test not found"}), 404
+        
+        if not os.path.exists(test_case["script_path"]):
+            return jsonify({"error": "Test script file not found"}), 404
+        
+        with open(test_case["script_path"], 'r') as f:
+            code_content = f.read()
+        
+        return jsonify({"code": code_content})
+    except Exception as e:
+        logger.error(f"Error viewing code: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/projects/<project_id>/tests/<test_id>/execute', methods=['POST'])
+def api_execute_test(project_id, test_id):
+    try:
+        project = get_project(project_id)
+        if not project:
+            return jsonify({"error": "Project not found"}), 404
+        
+        test_case = get_test_case(test_id)
+        if not test_case or test_case["project_id"] != project_id:
+            return jsonify({"error": "Test case not found"}), 404
+        
+        execution_result = execute_test(test_case)
+        
+        execution_id = str(uuid.uuid4())
+        
+        # Save execution result to database
+        add_execution(
+            execution_id,
+            project_id,
+            test_id,
+            execution_result["status"],
+            execution_result["result"],
+            execution_result["log_path"]
+        )
+        
+        return jsonify({
+            "success": True, 
+            "execution_id": execution_id,
+            "status": execution_result["status"]
+        })
+        
+    except Exception as e:
+        logger.error(f"Error executing test: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/projects/<project_id>/executions', methods=['GET'])
+def api_get_executions(project_id):
+    executions = get_executions(project_id)
+    return jsonify(executions)
+
+@app.route('/api/download/<path:filename>', methods=['GET'])
+def api_download_file(filename):
+    try:
+        directory = os.path.dirname(filename)
+        file = os.path.basename(filename)
+        return send_from_directory(directory, file, as_attachment=True)
+    except Exception as e:
+        logger.error(f"Error downloading file: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
 
 # Create a simple schema.sql file
 with open('schema.sql', 'w') as f:

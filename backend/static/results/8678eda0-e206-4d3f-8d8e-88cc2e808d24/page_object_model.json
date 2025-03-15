@@ -1,0 +1,426 @@
+[
+  {
+    "id": "86fdd2cc-9a22-4e0b-900e-773c2adc4492",
+    "name": "dashboard_div_sidebar",
+    "type": "div",
+    "purpose": "structure",
+    "selector": ".sidebar",
+    "selector_type": "class",
+    "properties": {
+      "text": "Dashboard\n\nHome\nAnalytics\nSettings\nUsers\nReports\n\n\n            \u00a9 2025 Your Company",
+      "attributes": {
+        "class": [
+          "sidebar"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "08f22ce5-6ccc-4046-a157-e7f71d69f77b"
+  },
+  {
+    "id": "ac41b584-2c76-4785-9d59-6af1cb7c153e",
+    "name": "dashboard_div_content",
+    "type": "div",
+    "purpose": "structure",
+    "selector": ".content",
+    "selector_type": "class",
+    "properties": {
+      "text": "My Dashboard\n\n\n\n\n\n\ud83d\udd14\n\u2699\ufe0f\n\n\n\n\n\nSales Overview\nTotal sales this month: $15,000\n\n\nWebsite Traffic\nVisitors this week: 3,000\n\n\nNew Users\nSignups this month: 200\n\n\n\n\n            \u00a9 2025 Your Company | All rights reserved.",
+      "attributes": {
+        "class": [
+          "content"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "08f22ce5-6ccc-4046-a157-e7f71d69f77b"
+  },
+  {
+    "id": "3db3144e-2a16-40a8-b520-9af2dff49544",
+    "name": "dashboard_div_main-dashboard",
+    "type": "div",
+    "purpose": "structure",
+    "selector": ".main-dashboard",
+    "selector_type": "class",
+    "properties": {
+      "text": "Sales Overview\nTotal sales this month: $15,000\n\n\nWebsite Traffic\nVisitors this week: 3,000\n\n\nNew Users\nSignups this month: 200",
+      "attributes": {
+        "class": [
+          "main-dashboard"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "08f22ce5-6ccc-4046-a157-e7f71d69f77b"
+  },
+  {
+    "id": "60dcd007-e6f1-4dc5-9cfd-8bba1e660d26",
+    "name": "dashboard_div_footer",
+    "type": "div",
+    "purpose": "structure",
+    "selector": ".footer",
+    "selector_type": "class",
+    "properties": {
+      "text": "\u00a9 2025 Your Company | All rights reserved.",
+      "attributes": {
+        "class": [
+          "footer"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "08f22ce5-6ccc-4046-a157-e7f71d69f77b"
+  },
+  {
+    "id": "08f22ce5-6ccc-4046-a157-e7f71d69f77b",
+    "name": "dashboard_structure_section",
+    "type": "section",
+    "parent_id": "1db9111e-b25f-4b79-acd9-1ce2cae837b5",
+    "purpose": "structure",
+    "children": [
+      "86fdd2cc-9a22-4e0b-900e-773c2adc4492",
+      "ac41b584-2c76-4785-9d59-6af1cb7c153e",
+      "3db3144e-2a16-40a8-b520-9af2dff49544",
+      "60dcd007-e6f1-4dc5-9cfd-8bba1e660d26"
+    ]
+  },
+  {
+    "id": "5337605c-3e96-4add-a176-73763ab9d226",
+    "name": "dashboard_ul_",
+    "type": "ul",
+    "purpose": "list",
+    "selector": "//ul[contains(text(), 'Home\nAnalytics\nSettings\nUsers\nReports')]",
+    "selector_type": "xpath",
+    "properties": {
+      "text": "Home\nAnalytics\nSettings\nUsers\nReports",
+      "attributes": {},
+      "is_visible": true
+    },
+    "parent_id": "1db9111e-b25f-4b79-acd9-1ce2cae837b5"
+  },
+  {
+    "id": "b0a89614-b928-4996-87aa-9e4610dd18f8",
+    "name": "dashboard_input_",
+    "type": "input",
+    "purpose": "input_text",
+    "selector": "//div[2]/div[1]/div[2]/input",
+    "selector_type": "xpath",
+    "properties": {
+      "text": "",
+      "attributes": {
+        "type": "text",
+        "placeholder": "Search..."
+      },
+      "is_visible": true
+    },
+    "parent_id": "1db9111e-b25f-4b79-acd9-1ce2cae837b5"
+  },
+  {
+    "id": "751cc209-c5ab-4061-a4f0-553c5a2b9cbd",
+    "name": "dashboard_div_dashboard-card",
+    "type": "div",
+    "purpose": "container",
+    "selector": ".dashboard-card",
+    "selector_type": "class",
+    "properties": {
+      "text": "Sales Overview\nTotal sales this month: $15,000",
+      "attributes": {
+        "class": [
+          "dashboard-card"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "1db9111e-b25f-4b79-acd9-1ce2cae837b5"
+  },
+  {
+    "id": "4a4a56f7-fb5f-4f10-8d5c-b8fbbf8e5c5f",
+    "name": "dashboard_div_dashboard-card",
+    "type": "div",
+    "purpose": "container",
+    "selector": ".dashboard-card",
+    "selector_type": "class",
+    "properties": {
+      "text": "Website Traffic\nVisitors this week: 3,000",
+      "attributes": {
+        "class": [
+          "dashboard-card"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "1db9111e-b25f-4b79-acd9-1ce2cae837b5"
+  },
+  {
+    "id": "3d001db5-08cf-40af-8a9d-72e58d589140",
+    "name": "dashboard_div_dashboard-card",
+    "type": "div",
+    "purpose": "container",
+    "selector": ".dashboard-card",
+    "selector_type": "class",
+    "properties": {
+      "text": "New Users\nSignups this month: 200",
+      "attributes": {
+        "class": [
+          "dashboard-card"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "1db9111e-b25f-4b79-acd9-1ce2cae837b5"
+  },
+  {
+    "id": "1db9111e-b25f-4b79-acd9-1ce2cae837b5",
+    "name": "DashboardPage",
+    "type": "page",
+    "children": [
+      "08f22ce5-6ccc-4046-a157-e7f71d69f77b",
+      "5337605c-3e96-4add-a176-73763ab9d226",
+      "b0a89614-b928-4996-87aa-9e4610dd18f8",
+      "751cc209-c5ab-4061-a4f0-553c5a2b9cbd",
+      "4a4a56f7-fb5f-4f10-8d5c-b8fbbf8e5c5f",
+      "3d001db5-08cf-40af-8a9d-72e58d589140"
+    ]
+  },
+  {
+    "id": "2ccf0720-0188-4d01-9fa1-d11af0b3b722",
+    "name": "li_home",
+    "type": "li",
+    "purpose": "list_item",
+    "selector": "//li[contains(text(), 'Home')]",
+    "selector_type": "xpath",
+    "properties": {
+      "text": "Home",
+      "attributes": {},
+      "is_visible": true
+    },
+    "parent_id": "fbdf9469-3cce-472a-9799-29b3ed1590a3"
+  },
+  {
+    "id": "b4c656eb-8cb4-42c2-8f02-48659448ad63",
+    "name": "li_analytics",
+    "type": "li",
+    "purpose": "list_item",
+    "selector": "//li[contains(text(), 'Analytics')]",
+    "selector_type": "xpath",
+    "properties": {
+      "text": "Analytics",
+      "attributes": {},
+      "is_visible": true
+    },
+    "parent_id": "fbdf9469-3cce-472a-9799-29b3ed1590a3"
+  },
+  {
+    "id": "6ed29c4b-51fa-4713-aea2-2514440f88e8",
+    "name": "li_settings",
+    "type": "li",
+    "purpose": "list_item",
+    "selector": "//li[contains(text(), 'Settings')]",
+    "selector_type": "xpath",
+    "properties": {
+      "text": "Settings",
+      "attributes": {},
+      "is_visible": true
+    },
+    "parent_id": "fbdf9469-3cce-472a-9799-29b3ed1590a3"
+  },
+  {
+    "id": "9424f7fc-3eea-41a6-9084-4857340d2280",
+    "name": "li_users",
+    "type": "li",
+    "purpose": "list_item",
+    "selector": "//li[contains(text(), 'Users')]",
+    "selector_type": "xpath",
+    "properties": {
+      "text": "Users",
+      "attributes": {},
+      "is_visible": true
+    },
+    "parent_id": "fbdf9469-3cce-472a-9799-29b3ed1590a3"
+  },
+  {
+    "id": "b399a350-ec66-4aa3-8614-abeebb1f61de",
+    "name": "li_reports",
+    "type": "li",
+    "purpose": "list_item",
+    "selector": "//li[contains(text(), 'Reports')]",
+    "selector_type": "xpath",
+    "properties": {
+      "text": "Reports",
+      "attributes": {},
+      "is_visible": true
+    },
+    "parent_id": "fbdf9469-3cce-472a-9799-29b3ed1590a3"
+  },
+  {
+    "id": "fbdf9469-3cce-472a-9799-29b3ed1590a3",
+    "name": "li_list_item_section",
+    "type": "section",
+    "parent_id": "ba24221c-0914-48dc-8e8c-421603f73bc7",
+    "purpose": "list_item",
+    "children": [
+      "2ccf0720-0188-4d01-9fa1-d11af0b3b722",
+      "b4c656eb-8cb4-42c2-8f02-48659448ad63",
+      "6ed29c4b-51fa-4713-aea2-2514440f88e8",
+      "9424f7fc-3eea-41a6-9084-4857340d2280",
+      "b399a350-ec66-4aa3-8614-abeebb1f61de"
+    ]
+  },
+  {
+    "id": "ba24221c-0914-48dc-8e8c-421603f73bc7",
+    "name": "LiPage",
+    "type": "page",
+    "children": [
+      "fbdf9469-3cce-472a-9799-29b3ed1590a3"
+    ]
+  },
+  {
+    "id": "cef2deca-c680-4fa9-a7bf-2775dafa0c2a",
+    "name": "div__2025_your_company",
+    "type": "div",
+    "purpose": "structure",
+    "selector": ".sidebar-footer",
+    "selector_type": "class",
+    "properties": {
+      "text": "\u00a9 2025 Your Company",
+      "attributes": {
+        "class": [
+          "sidebar-footer"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "ac09b6e7-2fb1-4c01-b803-3d8584bcf768"
+  },
+  {
+    "id": "7a90c761-e277-4ee7-8f54-6e2cbf0628a4",
+    "name": "div_my_dashboard_",
+    "type": "div",
+    "purpose": "structure",
+    "selector": ".header",
+    "selector_type": "class",
+    "properties": {
+      "text": "My Dashboard\n\n\n\n\n\n\ud83d\udd14\n\u2699\ufe0f",
+      "attributes": {
+        "class": [
+          "header"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "ac09b6e7-2fb1-4c01-b803-3d8584bcf768"
+  },
+  {
+    "id": "4ad3adfc-46ca-4e72-8919-5c9d7c738e9b",
+    "name": "div_my_dashboard",
+    "type": "div",
+    "purpose": "structure",
+    "selector": ".logo",
+    "selector_type": "class",
+    "properties": {
+      "text": "My Dashboard",
+      "attributes": {
+        "class": [
+          "logo"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "ac09b6e7-2fb1-4c01-b803-3d8584bcf768"
+  },
+  {
+    "id": "c59abf6c-2b76-4228-803e-7e4a56b5d196",
+    "name": "div_",
+    "type": "div",
+    "purpose": "structure",
+    "selector": ".search-bar",
+    "selector_type": "class",
+    "properties": {
+      "text": "",
+      "attributes": {
+        "class": [
+          "search-bar"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "ac09b6e7-2fb1-4c01-b803-3d8584bcf768"
+  },
+  {
+    "id": "b39fc758-615e-4afd-bf31-3ea684fcfbae",
+    "name": "div__",
+    "type": "div",
+    "purpose": "structure",
+    "selector": ".notifications",
+    "selector_type": "class",
+    "properties": {
+      "text": "\ud83d\udd14\n\u2699\ufe0f",
+      "attributes": {
+        "class": [
+          "notifications"
+        ]
+      },
+      "is_visible": true
+    },
+    "parent_id": "ac09b6e7-2fb1-4c01-b803-3d8584bcf768"
+  },
+  {
+    "id": "ac09b6e7-2fb1-4c01-b803-3d8584bcf768",
+    "name": "div_structure_section",
+    "type": "section",
+    "parent_id": "87ce0aad-3909-4ed8-af87-a4e4c2d1a221",
+    "purpose": "structure",
+    "children": [
+      "cef2deca-c680-4fa9-a7bf-2775dafa0c2a",
+      "7a90c761-e277-4ee7-8f54-6e2cbf0628a4",
+      "4ad3adfc-46ca-4e72-8919-5c9d7c738e9b",
+      "c59abf6c-2b76-4228-803e-7e4a56b5d196",
+      "b39fc758-615e-4afd-bf31-3ea684fcfbae"
+    ]
+  },
+  {
+    "id": "87ce0aad-3909-4ed8-af87-a4e4c2d1a221",
+    "name": "DivPage",
+    "type": "page",
+    "children": [
+      "ac09b6e7-2fb1-4c01-b803-3d8584bcf768"
+    ]
+  },
+  {
+    "id": "23cafb49-0eda-4de4-915d-d8bd6db85ce5",
+    "name": "span__",
+    "type": "span",
+    "purpose": "text",
+    "selector": "//span[contains(text(), '\ud83d\udd14')]",
+    "selector_type": "xpath",
+    "properties": {
+      "text": "\ud83d\udd14",
+      "attributes": {},
+      "is_visible": true
+    },
+    "parent_id": "195fc079-2fc1-4b3d-9124-515a49f6ce87"
+  },
+  {
+    "id": "7ac3ec6e-bf08-47a4-aa0e-5d7a5ece8f89",
+    "name": "span__",
+    "type": "span",
+    "purpose": "text",
+    "selector": "//span[contains(text(), '\u2699\ufe0f')]",
+    "selector_type": "xpath",
+    "properties": {
+      "text": "\u2699\ufe0f",
+      "attributes": {},
+      "is_visible": true
+    },
+    "parent_id": "195fc079-2fc1-4b3d-9124-515a49f6ce87"
+  },
+  {
+    "id": "195fc079-2fc1-4b3d-9124-515a49f6ce87",
+    "name": "SpanPage",
+    "type": "page",
+    "children": [
+      "23cafb49-0eda-4de4-915d-d8bd6db85ce5",
+      "7ac3ec6e-bf08-47a4-aa0e-5d7a5ece8f89"
+    ]
+  }
+]
